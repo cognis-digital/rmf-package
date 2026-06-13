@@ -1,4 +1,4 @@
-import argparse, sys, json
+import argparse, sys
 from pathlib import Path
 from cognis_mil import to_console, to_json
 from .core import scan, load_findings, build_ssp, build_poam, build_sar, build_oscal_ssp_skeleton
