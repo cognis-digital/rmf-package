@@ -5,6 +5,44 @@
 
 > Turn finding JSON into a full RMF accreditation package: SSP + POAM + SAR + OSCAL.
 
+## Usage — step by step
+
+`rmf-package` turns a findings JSON (or a directory of them) into NIST RMF authorization artifacts: SSP, POA&M, SAR, and an OSCAL skeleton.
+
+1. **Install:**
+
+   ```bash
+   pip install cognis-rmf-package      # or: pip install -e .
+   rmf-package --version
+   ```
+
+2. **Run against your findings** — the positional `target` is a findings JSON file or a directory (defaults to `.`). Console output by default:
+
+   ```bash
+   rmf-package ./findings.json --format console
+   ```
+
+3. **Emit specific artifacts** with `--emit` (comma-separated: `ssp,poam,sar,oscal`), naming the system and an output directory:
+
+   ```bash
+   rmf-package ./findings.json --emit ssp,poam,oscal \
+     --system "Acme Mission System" --out-dir ./rmf-out
+   ```
+
+4. **Read the result** — generated artifacts land in the output directory; inspect the OSCAL skeleton or JSON summary:
+
+   ```bash
+   ls ./rmf-out
+   rmf-package ./findings.json --format json | jq .
+   ```
+
+5. **Use it in automation** — chain it after a scanner (e.g. `mcpscan`/`tfscan`) in CI to keep the authorization package current:
+
+   ```bash
+   rmf-package ./scan-findings.json --emit ssp,poam,sar,oscal \
+     --system "Acme Mission System" --out-dir ./rmf-out --format json
+   ```
+
 ## Upstream
 
 Forks / wraps **(original)**. See [`UPSTREAM.md`](./UPSTREAM.md) for the
