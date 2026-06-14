@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "cognis-rmf-package"
-version = "0.1.0"
+version = "0.1.1"
 description = "Auto-generate SSP / POAM / SAR (eMASS / Xacta import format)"
 license = { text = "LicenseRef-COCL-1.0" }
 requires-python = ">=3.10"
@@ -14,9 +14,11 @@ keywords = ["military","ic","dod","cognis-digital","rmf-package"]
 dependencies = []
 
 [project.optional-dependencies]
+connect = ["cognis-connect @ git+https://github.com/cognis-digital/cognis-connect.git"]
 dev = ["pytest>=8.0", "pytest-cov"]
 
 [project.scripts]
+"rmf-package-emit" = "rmf_package.connect:emit_main"
 rmf-package = "rmf_package.cli:main"
 
 [tool.hatch.build.targets.wheel]
