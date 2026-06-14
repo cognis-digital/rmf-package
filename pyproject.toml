@@ -23,3 +23,6 @@ rmf-package = "rmf_package.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["rmf_package", "cognis_mil"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
