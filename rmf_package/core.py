@@ -30,15 +30,41 @@ FAMILIES = {
 }
 
 def control_family(ctrl_id: str) -> str:
-    """Given 'AC-2(1)' return 'AC'."""
+    """Given 'AC-2(1)' return 'AC'. Returns '' for blank/invalid input."""
+    if not ctrl_id or not isinstance(ctrl_id, str):
+        return ""
     return ctrl_id.split("-")[0] if "-" in ctrl_id else ctrl_id[:2]
 
 def load_findings(path: Path) -> list[dict]:
-    """Accept JSON list of finding dicts (as produced by cognis_mil ScanResult)."""
-    data = json.loads(path.read_text())
-    if isinstance(data, dict) and "findings" in data: return data["findings"]
-    if isinstance(data, list): return data
-    return []
+    """Accept JSON list of finding dicts (as produced by cognis_mil ScanResult).
+
+    Raises:
+        ValueError: if the file cannot be read or does not contain a valid
+                    JSON object/list structure.
+    """
+    try:
+        raw = path.read_text(encoding="utf-8")
+    except PermissionError as exc:
+        raise ValueError(f"Permission denied reading {path}") from exc
+    except OSError as exc:
+        raise ValueError(f"Cannot read {path}: {exc}") from exc
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"Invalid JSON in {path}: {exc}") from exc
+    if isinstance(data, dict) and "findings" in data:
+        items = data["findings"]
+        if not isinstance(items, list):
+            raise ValueError(
+                f"'findings' key in {path} must be a list, got {type(items).__name__}"
+            )
+        return items
+    if isinstance(data, list):
+        return data
+    raise ValueError(
+        f"{path} must contain a JSON list or a JSON object with a 'findings' list; "
+        f"got {type(data).__name__}"
+    )
 
 def build_ssp(findings: list[dict], system_name: str = "PLACEHOLDER SYSTEM") -> str:
     """Build a basic SSP in Markdown."""
@@ -132,10 +158,14 @@ def scan(target=".", system_name="PLACEHOLDER SYSTEM", **opts):
     all_findings = []
     for f in files:
         if f.is_file():
-            try: all_findings.extend(load_findings(f))
-            except Exception as e:
-                r.add(Finding(f"RP-PARSE-{f.stem}", Severity.LOW, f"Couldn't parse {f}: {e}",
-                              location=str(f)))
+            try:
+                all_findings.extend(load_findings(f))
+            except (ValueError, OSError) as e:
+                r.add(Finding(
+                    f"RP-PARSE-{f.stem}", Severity.LOW,
+                    f"Couldn't parse {f.name}: {e}",
+                    location=str(f),
+                ))
     r.items_scanned = len(all_findings)
     from collections import Counter
     sev_count = Counter(f.get("severity","") for f in all_findings)
