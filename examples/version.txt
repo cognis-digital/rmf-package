@@ -1,0 +1,3 @@
+$ rmf-package-emit --version
+
+rmf-package 0.1.0

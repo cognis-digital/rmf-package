@@ -5,6 +5,63 @@
 
 > Turn finding JSON into a full RMF accreditation package: SSP + POAM + SAR + OSCAL.
 
+
+<!-- cognis:example:start -->
+## 🔎 Example output
+
+Real, reproducible output from the tool — runs offline:
+
+```console
+$ rmf-package-emit --version
+rmf-package 0.1.0
+```
+
+```console
+$ rmf-package-emit --help
+usage: rmf-package [-h] [--emit EMIT] [--system SYSTEM] [-o OUT_DIR]
+                   [--format {console,json}] [-v]
+                   [target]
+
+positional arguments:
+  target                Findings JSON file or dir
+
+options:
+  -h, --help            show this help message and exit
+  --emit EMIT           Comma-separated: ssp,poam,sar,oscal
+  --system SYSTEM       System name (used in artifacts)
+  -o, --out-dir OUT_DIR
+                        Output directory
+  --format {console,json}
+  -v, --version         show program's version number and exit
+```
+
+> Blocks above are real `rmf-package` output — reproduce them from a clone.
+
+**Sample result format** _(illustrative values — run on your own data for real findings):_
+
+```
+{
+"findings": [
+    {
+        "id": "1234567890",
+        "title": "Suspicious Network Traffic",
+        "description": "Network traffic from unknown IP address",
+        "created_by": "John Doe",
+        "created_at": "2023-02-20T14:30:00Z"
+    },
+    {
+        "id": "2345678901",
+        "title": "Malware Detection",
+        "description": "Malware detected on endpoint",
+        "created_by": "Jane Smith",
+        "created_at": "2023-02-21T10:15:00Z"
+    }
+]
+}
+```
+
+<!-- cognis:example:end -->
+
 ## Usage — step by step
 
 `rmf-package` turns a findings JSON (or a directory of them) into NIST RMF authorization artifacts: SSP, POA&M, SAR, and an OSCAL skeleton.

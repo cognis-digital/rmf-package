@@ -1,0 +1,17 @@
+$ rmf-package-emit --help
+
+usage: rmf-package [-h] [--emit EMIT] [--system SYSTEM] [-o OUT_DIR]
+                   [--format {console,json}] [-v]
+                   [target]
+
+positional arguments:
+  target                Findings JSON file or dir
+
+options:
+  -h, --help            show this help message and exit
+  --emit EMIT           Comma-separated: ssp,poam,sar,oscal
+  --system SYSTEM       System name (used in artifacts)
+  -o, --out-dir OUT_DIR
+                        Output directory
+  --format {console,json}
+  -v, --version         show program's version number and exit
